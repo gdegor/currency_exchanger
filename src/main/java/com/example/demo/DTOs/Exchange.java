@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Exchange {
-    private final Currency baseCurrency;
-    private final Currency targetCurrency;
+    private Currency baseCurrency;
+    private Currency targetCurrency;
     private BigDecimal rate;
     private final BigDecimal amount;
     private final BigDecimal convertedAmount;
@@ -25,6 +25,12 @@ public class Exchange {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
+    }
+
+    public void swapDirect() {
+        Currency tmp = baseCurrency;
+        baseCurrency = targetCurrency;
+        targetCurrency = tmp;
     }
 
     @Override
