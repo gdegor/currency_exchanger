@@ -1,8 +1,9 @@
-package com.example.demo.Servlets;
+package com.egovoryn.exchanger.Servlets;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -13,19 +14,10 @@ import java.sql.Statement;
 @WebServlet(name = "ExchangeRate", value = "/exchangeRate/*")
 public class ExRateServlet extends EntityServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        String pairCurrency, from, to;
-        try {
-            pairCurrency = request.getRequestURI().split("/")[2];
-            if (pairCurrency.length() != 6) throw new Exception();
-            from = pairCurrency.substring(0,3);
-            to = pairCurrency.substring(3,6);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            errorResponse(response, "Pair currency codes are missing or incorrect in the address");
-            return;
-        }
+        String[] fromTo = splitAndCheckPair(request, response);
+        if (fromTo[0] == null || fromTo[1] == null) return;
+        Integer idPair = findPairIdByCodes(fromTo[0], fromTo[1]);
 
-        Integer idPair = findPairIdByCodes(from, to);
         if (idPair == -1) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             errorResponse(response, "The exchange rate for the pair was not found");
@@ -52,18 +44,9 @@ public class ExRateServlet extends EntityServlet {
             return;
         }
 
-        String pairCurrency, from, to;
-        try {
-            pairCurrency = request.getRequestURI().split("/")[2];
-            if (pairCurrency.length() != 6) throw new Exception();
-            from = pairCurrency.substring(0,3);
-            to = pairCurrency.substring(3,6);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            errorResponse(response, "Pair currency codes are missing or incorrect in the address");
-            return;
-        }
-        Integer idPair = findPairIdByCodes(from, to);
+        String[] fromTo = splitAndCheckPair(request, response);
+        if (fromTo[0] == null || fromTo[1] == null) return;
+        Integer idPair = findPairIdByCodes(fromTo[0], fromTo[1]);
 
         if (idPair == -1) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -75,15 +58,30 @@ public class ExRateServlet extends EntityServlet {
                 statement.execute();
                 statement.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                errorResponse(response, "Database is locked");
+                return;
             }
-
             super.doGet(response, "SELECT * FROM ExchangeRates WHERE ID = "+idPair);
         }
     }
 
+    private String[] splitAndCheckPair(HttpServletRequest request, HttpServletResponse response) {
+        String pairCurrency;
+        String[] fromTo = new String[2];
+        try {
+            pairCurrency = request.getRequestURI().split("/")[2];
+            if (pairCurrency.length() != 6) throw new Exception();
+            fromTo[0] = pairCurrency.substring(0,3);
+            fromTo[1] = pairCurrency.substring(3,6);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            errorResponse(response, "Pair currency codes are missing or incorrect in the address");
+        }
+        return fromTo;
+    }
+
     private Integer findPairIdByCodes(String codeFrom, String codeTo) {
-        Integer res = -1;
         try {
             String query = "SELECT * FROM ExchangeRates ex " +
                            "JOIN Currencies cur ON cur.ID = ex.BaseCurrencyId " +
@@ -92,11 +90,11 @@ public class ExRateServlet extends EntityServlet {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                res = resultSet.getInt(1);
+                return resultSet.getInt(1);
             }
             resultSet.close();
             statement.close();
-            return res;
+            return -1;
         } catch (Exception e) {
             return -1;
         }

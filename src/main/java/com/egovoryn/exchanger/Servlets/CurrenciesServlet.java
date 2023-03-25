@@ -1,4 +1,4 @@
-package com.example.demo.Servlets;
+package com.egovoryn.exchanger.Servlets;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class CurrenciesServlet extends EntityServlet {
         }
 
         String query =  "INSERT INTO Currencies (Code, FullName, Sign)" +
-                "VALUES (\"" + code + "\", \"" + name +" \", \" " + sign + " \")";
+                        "VALUES (\"" + code + "\", \"" + name + " \", \" " + sign + " \")";
 
         try {
             Statement statement = connection.createStatement();
@@ -52,26 +52,3 @@ public class CurrenciesServlet extends EntityServlet {
         return "OK";
     }
 }
-
-//    CREATE TABLE "ExchangeRates" (
-//        "ID"    INTEGER NOT NULL,
-//        "BaseCurrencyId"        INTEGER UNIQUE,
-//        "TargetCurrencyId"      INTEGER UNIQUE,
-//        "Rate" DECIMAL(6),
-//        PRIMARY KEY("ID" AUTOINCREMENT),
-//        FOREIGN KEY("BaseCurrencyId") REFERENCES "Currencies"("ID"),
-//        FOREIGN KEY("TargetCurrencyId") REFERENCES "Currencies"("ID")
-//        );
-//
-//    CREATE TABLE "Currencies" (
-//        "ID"    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-//        "Code"  VARCHAR UNIQUE,
-//        "FullName" VARCHAR,
-//        "Sign"  VARCHAR);
-
-//
-//INSERT INTO Currencies (Code, FullName, Sign) VALUES ("AUD", "Australian dollar", "A$");
-//INSERT INTO Currencies (Code, FullName, Sign) VALUES ("USD", "US Dollar", "$");
-//INSERT INTO Currencies (Code, FullName, Sign) VALUES ("GBP", "Pound Sterling", "£");
-//INSERT INTO Currencies (Code, FullName, Sign) VALUES ("JPY", "Yen", "¥");
-//INSERT INTO Currencies (Code, FullName, Sign) VALUES ("RUB", "Russian Ruble", "₽");

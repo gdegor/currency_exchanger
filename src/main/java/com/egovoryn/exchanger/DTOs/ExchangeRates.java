@@ -1,4 +1,4 @@
-package com.example.demo.DTOs;
+package com.egovoryn.exchanger.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -30,10 +30,6 @@ public class ExchangeRates extends DataTransferObject {
 
     public BigDecimal getRate() {
         return rate;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public Currency getBaseCurrency() {

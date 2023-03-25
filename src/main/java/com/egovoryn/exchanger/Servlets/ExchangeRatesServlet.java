@@ -1,9 +1,11 @@
-package com.example.demo.Servlets;
+package com.egovoryn.exchanger.Servlets;
 
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @WebServlet(name = "ExchangeRates", value = "/exchangeRates")
 public class ExchangeRatesServlet extends EntityServlet {
@@ -25,8 +27,8 @@ public class ExchangeRatesServlet extends EntityServlet {
 
         try {
             String query = "INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId, Rate)" +
-                    "VALUES (\"" + findCurIdByCode(baseCurrencyCode) + "\", \"" +
-                    findCurIdByCode(targetCurrencyCode) +" \", \" " + rate + " \")";
+                            "VALUES (\"" + findCurIdByCode(baseCurrencyCode) + "\", \"" +
+                            findCurIdByCode(targetCurrencyCode) + " \", \" " + rate + " \")";
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
             statement.close();

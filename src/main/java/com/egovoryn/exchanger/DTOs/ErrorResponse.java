@@ -1,4 +1,4 @@
-package com.example.demo.DTOs;
+package com.egovoryn.exchanger.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

@@ -1,4 +1,4 @@
-package com.example.demo.DTOs;
+package com.egovoryn.exchanger.DTOs;
 
 abstract public class DataTransferObject {
 }

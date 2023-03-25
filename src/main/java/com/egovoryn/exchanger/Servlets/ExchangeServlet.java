@@ -1,12 +1,12 @@
-package com.example.demo.Servlets;
+package com.egovoryn.exchanger.Servlets;
 
-import com.example.demo.DTOs.Exchange;
-import com.example.demo.DTOs.ExchangeRates;
+import com.egovoryn.exchanger.DTOs.Exchange;
+import com.egovoryn.exchanger.DTOs.ExchangeRates;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -70,9 +70,12 @@ public class ExchangeServlet extends EntityServlet {
                             response.setStatus(HttpServletResponse.SC_CONFLICT);
                             errorResponse(response, "This calculation is not feasible");
                         }
+                        resultSet.close();
+                        rsTmp.close();
                     } else {
                         response.setStatus(HttpServletResponse.SC_CONFLICT);
                         errorResponse(response, "This calculation is not feasible");
+                        resultSet.close();
                     }
                 }
             }
@@ -85,20 +88,21 @@ public class ExchangeServlet extends EntityServlet {
     private void directExchange() throws SQLException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ExchangeRates exRateDirect = new ExchangeRates(resultSet.getInt(1),
-                findCurDataByID(resultSet.getInt(2)),
-                findCurDataByID(resultSet.getInt(3)),
-                resultSet.getBigDecimal(4));
+                                                       findCurDataByID(resultSet.getInt(2)),
+                                                       findCurDataByID(resultSet.getInt(3)),
+                                                       resultSet.getBigDecimal(4));
 
         BigDecimal convertedAmount = amountDecimal.multiply(exRateDirect.getRate()).setScale(6, RoundingMode.HALF_UP);
         out.println(objectMapper.writeValueAsString(new Exchange(exRateDirect, amountDecimal, convertedAmount)));
+        resultSet.close();
     }
 
     private void backExchange() throws SQLException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ExchangeRates exchangeRateBack = new ExchangeRates(resultSet.getInt(1),
-                findCurDataByID(resultSet.getInt(2)),
-                findCurDataByID(resultSet.getInt(3)),
-                resultSet.getBigDecimal(4));
+                                                           findCurDataByID(resultSet.getInt(2)),
+                                                           findCurDataByID(resultSet.getInt(3)),
+                                                           resultSet.getBigDecimal(4));
 
         BigDecimal one = new BigDecimal(1);
 
@@ -108,6 +112,7 @@ public class ExchangeServlet extends EntityServlet {
         ex.setRate(backRate);
         ex.swapDirect();
         out.println(objectMapper.writeValueAsString(ex));
+        resultSet.close();
     }
 
     private boolean exchangeViaDollar(ResultSet rs2) throws SQLException, JsonProcessingException {
@@ -129,7 +134,6 @@ public class ExchangeServlet extends EntityServlet {
         if (fromUSD == null || toUSD == null) return false;
 
         BigDecimal calcRate = toUSD.divide(fromUSD, 6, RoundingMode.HALF_UP);
-
         BigDecimal convertedAmount = amountDecimal.multiply(calcRate).setScale(6, RoundingMode.HALF_UP);
 
         Exchange ex = new Exchange(new ExchangeRates(-1, exchangeRateUSD.get(0).getTargetCurrency(),
@@ -154,11 +158,11 @@ public class ExchangeServlet extends EntityServlet {
     }
 
     private String checkParameters(String from, String to, String amount) {
-        if (from.isEmpty()) {
+        if (from == null || from.isEmpty()) {
             return "Parameter «from» is empty";
-        } else if (to.isEmpty()) {
+        } else if (to == null || to.isEmpty()) {
             return "Parameter «to» is empty";
-        } else if (amount.isEmpty()) {
+        } else if (amount == null || amount.isEmpty()) {
             return "Parameter «amount» is empty";
         }
         return "OK";

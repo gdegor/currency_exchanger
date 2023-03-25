@@ -1,11 +1,12 @@
-package com.example.demo.Servlets;
+package com.egovoryn.exchanger.Servlets;
 
-import com.example.demo.DTOs.Currency;
-import com.example.demo.DTOs.DataTransferObject;
-import com.example.demo.DTOs.ErrorResponse;
-import com.example.demo.DTOs.ExchangeRates;
+import com.egovoryn.exchanger.DTOs.Currency;
+import com.egovoryn.exchanger.DTOs.DataTransferObject;
+import com.egovoryn.exchanger.DTOs.ErrorResponse;
+import com.egovoryn.exchanger.DTOs.ExchangeRates;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
@@ -44,7 +45,6 @@ abstract public class EntityServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletResponse response, String query) {
-        PrintWriter out;
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -70,7 +70,7 @@ abstract public class EntityServlet extends HttpServlet {
                 currencies = tmp;
             }
             ObjectMapper objectMapper = new ObjectMapper();
-            out = response.getWriter();
+            PrintWriter out = response.getWriter();
             out.println(objectMapper.writeValueAsString(currencies));
 
             out.close();
@@ -98,7 +98,7 @@ abstract public class EntityServlet extends HttpServlet {
         ResultSet resultSet = statement.executeQuery("SELECT * FROM Currencies WHERE ID="+id.toString());
 
         Currency res = new Currency(resultSet.getInt(1), resultSet.getString(2),
-                resultSet.getString(3), resultSet.getString(4));
+                                    resultSet.getString(3), resultSet.getString(4));
 
         resultSet.close();
         statement.close();
@@ -107,15 +107,14 @@ abstract public class EntityServlet extends HttpServlet {
 
     protected Integer findCurIdByCode(String code) {
         try {
-            int res = -1;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT ID FROM Currencies WHERE Code=\""+code+"\"");
             if (resultSet.next()) {
-                res = resultSet.getInt(1);
+                return resultSet.getInt(1);
             }
             resultSet.close();
             statement.close();
-            return res;
+            return -1;
         } catch (Exception e) {
             return -1;
         }
