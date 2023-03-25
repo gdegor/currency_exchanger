@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @WebServlet(name = "ExchangeRate", value = "/exchangeRate/*")
-public class ExRateServlet extends EntityServlet {
+public class ExchangeRateServlet extends EntityServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         String[] fromTo = splitAndCheckPair(request, response);
         if (fromTo[0] == null || fromTo[1] == null) return;

@@ -22,10 +22,7 @@ abstract public class EntityServlet extends HttpServlet {
     private static final String DB_URL = "jdbc:sqlite:";
     private static final String DRIVER = "org.sqlite.JDBC";
     private static final String DATABASE = "currency.db";
-    protected Connection connection;
-    public EntityServlet() {
-        connection = makeConnection();
-    }
+    protected Connection connection = makeConnection();
 
     private Connection makeConnection() {
         try {
