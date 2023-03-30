@@ -9,7 +9,7 @@ public class CurrencyServlet extends EntityServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         String code;
         try {
-            code = request.getRequestURI().split("/")[2];
+            code = request.getPathInfo().replace("/","");;
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             errorResponse(response, "No currency code in the address");

@@ -38,7 +38,7 @@ public class CurrenciesServlet extends EntityServlet {
             return;
         }
 
-        this.doGet(response, "SELECT * FROM Currencies WHERE Code=\""+code+"\"");
+        this.doGet(response, "SELECT * FROM Currencies WHERE Code=\"" + code + "\"");
     }
 
     private String checkParameters(String code, String name, String sign) {

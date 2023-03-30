@@ -17,7 +17,6 @@ public class ExchangeRateServlet extends EntityServlet {
         String[] fromTo = splitAndCheckPair(request, response);
         if (fromTo[0] == null || fromTo[1] == null) return;
         Integer idPair = findPairIdByCodes(fromTo[0], fromTo[1]);
-
         if (idPair == -1) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             errorResponse(response, "The exchange rate for the pair was not found");
@@ -52,7 +51,7 @@ public class ExchangeRateServlet extends EntityServlet {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             errorResponse(response, "The currency pair is not in the database");
         } else {
-            String query = "UPDATE ExchangeRates SET Rate = "+rate+" WHERE ID = "+idPair;
+            String query = "UPDATE ExchangeRates SET Rate = " + rate + " WHERE ID = " + idPair;
             try {
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.execute();
@@ -62,23 +61,23 @@ public class ExchangeRateServlet extends EntityServlet {
                 errorResponse(response, "Database is locked");
                 return;
             }
-            super.doGet(response, "SELECT * FROM ExchangeRates WHERE ID = "+idPair);
+            super.doGet(response, "SELECT * FROM ExchangeRates WHERE ID = " + idPair);
         }
     }
 
     private String[] splitAndCheckPair(HttpServletRequest request, HttpServletResponse response) {
         String pairCurrency;
-        String[] fromTo = new String[2];
+        String[] result = new String[2];
         try {
-            pairCurrency = request.getRequestURI().split("/")[2];
+            pairCurrency = request.getPathInfo().replace("/","");;
             if (pairCurrency.length() != 6) throw new Exception();
-            fromTo[0] = pairCurrency.substring(0,3);
-            fromTo[1] = pairCurrency.substring(3,6);
+            result[0] = pairCurrency.substring(0,3);
+            result[1] = pairCurrency.substring(3,6);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             errorResponse(response, "Pair currency codes are missing or incorrect in the address");
         }
-        return fromTo;
+        return result;
     }
 
     private Integer findPairIdByCodes(String codeFrom, String codeTo) {

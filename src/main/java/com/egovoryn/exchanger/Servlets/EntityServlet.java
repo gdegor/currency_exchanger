@@ -28,7 +28,7 @@ abstract public class EntityServlet extends HttpServlet {
         try {
             if (connection == null) {
                 Class.forName(DRIVER);
-                URL resource = CurrenciesServlet.class.getClassLoader().getResource(DATABASE);
+                URL resource = this.getClass().getClassLoader().getResource(DATABASE);
                 assert resource != null;
                 String path = DB_URL + new File(resource.toURI()).getAbsolutePath();
                 SQLiteConfig config = new SQLiteConfig();
@@ -47,7 +47,7 @@ abstract public class EntityServlet extends HttpServlet {
             ResultSet resultSet = statement.executeQuery(query);
 
             response.setContentType("application/json; charset=UTF-8");
-            List<? extends DataTransferObject> currencies;
+            List<? extends DataTransferObject> transferObjects;
 
             if (Objects.equals(query.split(" ")[3], "ExchangeRates")) {
                 List<ExchangeRates> tmp = new ArrayList<>();
@@ -57,18 +57,18 @@ abstract public class EntityServlet extends HttpServlet {
                                               findCurDataByID(resultSet.getInt(3)),
                                               resultSet.getBigDecimal(4)));
                 }
-                currencies = tmp;
+                transferObjects = tmp;
             } else {
                 List<Currency> tmp = new ArrayList<>();
                 while (resultSet.next()) {
                     tmp.add(new Currency(resultSet.getInt(1), resultSet.getString(2),
                                          resultSet.getString(3), resultSet.getString(4)));
                 }
-                currencies = tmp;
+                transferObjects = tmp;
             }
             ObjectMapper objectMapper = new ObjectMapper();
             PrintWriter out = response.getWriter();
-            out.println(objectMapper.writeValueAsString(currencies));
+            out.println(objectMapper.writeValueAsString(transferObjects));
 
             out.close();
             resultSet.close();
@@ -92,7 +92,7 @@ abstract public class EntityServlet extends HttpServlet {
 
     protected Currency findCurDataByID(Integer id) throws SQLException {
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM Currencies WHERE ID="+id.toString());
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM Currencies WHERE ID=" + id.toString());
 
         Currency res = new Currency(resultSet.getInt(1), resultSet.getString(2),
                                     resultSet.getString(3), resultSet.getString(4));
@@ -105,7 +105,7 @@ abstract public class EntityServlet extends HttpServlet {
     protected Integer findCurIdByCode(String code) {
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT ID FROM Currencies WHERE Code=\""+code+"\"");
+            ResultSet resultSet = statement.executeQuery("SELECT ID FROM Currencies WHERE Code=\"" + code + "\"");
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }

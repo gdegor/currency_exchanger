@@ -27,8 +27,8 @@ public class ExchangeRatesServlet extends EntityServlet {
 
         try {
             String query = "INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId, Rate)" +
-                            "VALUES (\"" + findCurIdByCode(baseCurrencyCode) + "\", \"" +
-                            findCurIdByCode(targetCurrencyCode) + " \", \" " + rate + " \")";
+                           "VALUES (\"" + findCurIdByCode(baseCurrencyCode) + "\", \"" +
+                           findCurIdByCode(targetCurrencyCode) + " \", \" " + rate + " \")";
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
             statement.close();

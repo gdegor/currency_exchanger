@@ -3,17 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
-
-<!--    <welcome-file-list>-->
-<!--        <welcome-file>first.jsp</welcome-file>-->
-<!--    </welcome-file-list>-->
-
     <servlet>
-        <servlet-name>firstJsp</servlet-name>
-        <jsp-file>/first.jsp</jsp-file>
+        <servlet-name>main_jsp</servlet-name>
+        <jsp-file>/main.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
-        <servlet-name>firstJsp</servlet-name>
+        <servlet-name>main_jsp</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 </web-app>
