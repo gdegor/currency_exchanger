@@ -26,7 +26,7 @@ public class CurrenciesServlet extends EntityServlet {
         }
 
         String query =  "INSERT INTO Currencies (Code, FullName, Sign)" +
-                        "VALUES (\"" + code + "\", \"" + name + " \", \" " + sign + " \")";
+                        "VALUES (\"" + code + "\", \"" + name + "\", \"" + sign + "\")";
 
         try {
             Statement statement = connection.createStatement();
@@ -42,12 +42,12 @@ public class CurrenciesServlet extends EntityServlet {
     }
 
     private String checkParameters(String code, String name, String sign) {
-        if (code == null || code.isEmpty()) {
-            return "Parameter «code» is empty";
+        if (code == null || code.length() != 3) {
+            return "Parameter «code» is wrong";
         } else if (name == null || name.isEmpty()) {
-            return "Parameter «name» is empty";
+            return "Parameter «name» is wrong";
         } else if (sign == null || sign.isEmpty()) {
-            return "Parameter «sign» is empty";
+            return "Parameter «sign» is wrong";
         }
         return "OK";
     }
