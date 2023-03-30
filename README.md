@@ -21,21 +21,22 @@ _Веб-интерфейс для проекта не подразумевает
 ## Реализованные запросы:
 
 * GET-запросы
-  * /currencies – получение списка валют
-  * /currency/EUR – получение конкретной валюты
-  * /exchangeRates – получение списка всех обменных курсов
-  * /exchangeRate/USDRUB – Получение конкретного обменного курса
+  * <span style="color:white">/currencies</span> – получение списка валют
+  * <span style="color:white">/currency/</span>EUR – получение конкретной валюты
+  * <span style="color:white">/exchangeRates</span> – получение списка всех обменных курсов
+  * <span style="color:white">/exchangeRate/</span>USDRUB – Получение конкретного обменного курса
+  * <span style="color:white">/exchange</span>?from=USD&to=AUD&amount=10 – перевод определённого количества средств из одной валюты в другую
   
 
 * POST-запросы
   * добавление новой валюты в базу
-    * /currencies?name=US Dollar&code=USD&sign=$
+    * <span style="color:white">/currencies</span>?name=US Dollar&code=USD&sign=$
   * добавление нового обменного курса в базу
-    * /exchangeRates?baseCurrencyCode=USD&targetCurrencyCode=RUB&rate=77
+    * <span style="color:white">/exchangeRates</span>?baseCurrencyCode=USD&targetCurrencyCode=RUB&rate=77
 
   
 * PATCH-запрос
-  * /exchangeRate/USDRUB?rate=70 – обновление существующего в базе обменного курса
+  * <span style="color:white">/exchangeRate/</span>USDRUB?rate=70 – обновление существующего в базе обменного курса
 
 Ссылка на приложение: http://185.21.142.32:8080/currency_exchanger-1.0/
 
