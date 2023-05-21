@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import java.math.BigDecimal;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Exchange {
+public class ExchangeResult {
     private Currency baseCurrency;
     private Currency targetCurrency;
     private BigDecimal rate;
@@ -14,7 +14,7 @@ public class Exchange {
 
 
 
-    public Exchange(ExchangeRates exRates, BigDecimal amount, BigDecimal convertedAmount) {
+    public ExchangeResult(ExchangeRates exRates, BigDecimal amount, BigDecimal convertedAmount) {
         this.baseCurrency = exRates.getBaseCurrency();
         this.targetCurrency = exRates.getTargetCurrency();
         this.rate = exRates.getRate();
@@ -35,7 +35,7 @@ public class Exchange {
 
     @Override
     public String toString() {
-        return "Exchange{" +
+        return "ExchangeResult{" +
                 "baseCurrency=" + baseCurrency +
                 ", targetCurrency=" + targetCurrency +
                 ", rate=" + rate +

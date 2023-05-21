@@ -1,4 +1,4 @@
-package com.egovoryn.exchanger.Servlets;
+package com.egovoryn.exchanger.servlets;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;

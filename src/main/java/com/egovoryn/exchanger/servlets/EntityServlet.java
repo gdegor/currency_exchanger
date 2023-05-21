@@ -1,4 +1,4 @@
-package com.egovoryn.exchanger.Servlets;
+package com.egovoryn.exchanger.servlets;
 
 import com.egovoryn.exchanger.DTOs.Currency;
 import com.egovoryn.exchanger.DTOs.DataTransferObject;
