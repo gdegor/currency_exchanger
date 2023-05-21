@@ -7,7 +7,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class CurrencyRepository extends EntityRepository {
-    public Currency findCurDataByID(Integer id) throws SQLException {
+    public CurrencyRepository(String query) {
+        super(query);
+    }
+
+    public Currency create() {
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            return new Currency(resultSet.getInt(1), resultSet.getString(2),
+                                resultSet.getString(3), resultSet.getString(4));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Currency findCurDataByID(Integer id) throws SQLException {
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM Currencies WHERE ID=" + id.toString());
 
@@ -19,7 +34,7 @@ public class CurrencyRepository extends EntityRepository {
         return res;
     }
 
-    public Integer findCurIdByCode(String code) {
+    public static Integer findCurIdByCode(String code) {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT ID FROM Currencies WHERE Code=\"" + code + "\"");

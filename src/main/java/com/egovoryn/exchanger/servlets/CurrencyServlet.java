@@ -1,5 +1,6 @@
 package com.egovoryn.exchanger.servlets;
 
+import com.egovoryn.exchanger.repositories.CurrencyRepository;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ public class CurrencyServlet extends EntityServlet {
             return;
         }
 
-        if (findCurIdByCode(code) == -1) {
+        if (CurrencyRepository.findCurIdByCode(code) == -1) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             errorResponse(response, "Currency not found");
         } else {

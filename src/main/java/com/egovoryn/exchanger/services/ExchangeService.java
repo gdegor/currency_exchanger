@@ -19,10 +19,9 @@ public class ExchangeService {
         String from = exchangeRequest.getBaseCurrencyCode();
         String to = exchangeRequest.getTargetCurrencyCode();
 
-        CurrencyRepository currencyRepository = new CurrencyRepository();
-        Integer fromId = currencyRepository.findCurIdByCode(from);
-        Integer toId = currencyRepository.findCurIdByCode(to);
-        Integer usdId = currencyRepository.findCurIdByCode("USD");
+        Integer fromId = CurrencyRepository.findCurIdByCode(from);
+        Integer toId = CurrencyRepository.findCurIdByCode(to);
+        Integer usdId = CurrencyRepository.findCurIdByCode("USD");
 
         if (fromId == -1 || toId == -1) {
             throw new RuntimeException("The currency pair is not in the database");

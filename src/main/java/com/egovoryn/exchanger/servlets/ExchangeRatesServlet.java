@@ -1,11 +1,12 @@
 package com.egovoryn.exchanger.servlets;
 
+import com.egovoryn.exchanger.repositories.CurrencyRepository;
+import com.egovoryn.exchanger.repositories.ExchangeRatesRepository;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 @WebServlet(name = "ExchangeRates", value = "/exchangeRates")
 public class ExchangeRatesServlet extends EntityServlet {
@@ -27,11 +28,9 @@ public class ExchangeRatesServlet extends EntityServlet {
 
         try {
             String query = "INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId, Rate)" +
-                           "VALUES (\"" + findCurIdByCode(baseCurrencyCode) + "\", \"" +
-                           findCurIdByCode(targetCurrencyCode) + "\", \"" + rate + "\")";
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(query);
-            statement.close();
+                           "VALUES (\"" + CurrencyRepository.findCurIdByCode(baseCurrencyCode) + "\", \"" +
+                            CurrencyRepository.findCurIdByCode(targetCurrencyCode) + "\", \"" + rate + "\")";
+            ExchangeRatesRepository.update(query);
         } catch (SQLException e) {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
             errorResponse(response, "Currency pair with this code already exists "+

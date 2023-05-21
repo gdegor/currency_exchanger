@@ -7,34 +7,39 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ExchangeRatesRepository extends EntityRepository {
-    private final String query;
-
     public ExchangeRatesRepository(String query) {
-        this.query = query;
-    }
-
-    public boolean isValidateQuery() {
-        try {
-            Statement statement = connection.createStatement();
-            return statement.executeQuery(query).next();
-        } catch (SQLException e) {
-            return false;
-        }
+        super(query);
     }
 
     public ExchangeRates create() {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-
-            CurrencyRepository curRepo = new CurrencyRepository();
-
             return new ExchangeRates(resultSet.getInt(1),
-                                     curRepo.findCurDataByID(resultSet.getInt(2)),
-                                     curRepo.findCurDataByID(resultSet.getInt(3)),
+                                     CurrencyRepository.findCurDataByID(resultSet.getInt(2)),
+                                     CurrencyRepository.findCurDataByID(resultSet.getInt(3)),
                                      resultSet.getBigDecimal(4));
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static Integer findPairIdByCodes(String codeFrom, String codeTo) {
+        try {
+            String query =  "SELECT * FROM ExchangeRates ex " +
+                            "JOIN Currencies cur ON cur.ID = ex.BaseCurrencyId " +
+                            "JOIN Currencies cur1 ON cur1.ID = ex.TargetCurrencyId " +
+                            "WHERE cur.Code = \"" + codeFrom + "\" AND cur1.Code = \"" + codeTo + "\" ";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            resultSet.close();
+            statement.close();
+            return -1;
+        } catch (Exception e) {
+            return -1;
         }
     }
 }

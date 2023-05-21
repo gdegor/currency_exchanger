@@ -1,11 +1,11 @@
 package com.egovoryn.exchanger.servlets;
 
+import com.egovoryn.exchanger.repositories.CurrencyRepository;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 @WebServlet(name = "Currencies", value = "/currencies")
 public class CurrenciesServlet extends EntityServlet {
@@ -29,9 +29,7 @@ public class CurrenciesServlet extends EntityServlet {
                         "VALUES (\"" + code + "\", \"" + name + "\", \"" + sign + "\")";
 
         try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(query);
-            statement.close();
+            CurrencyRepository.update(query);
         } catch (SQLException e) {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
             errorResponse(response, "Currency with this code already exists");
